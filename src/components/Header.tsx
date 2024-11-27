@@ -25,8 +25,8 @@ export const Header: React.FC<Props> = ({
   setTempTodo,
   todosInProcess,
   updateTodo,
-  newTitleTodo: newTodoTitle,
-  setNewTitleTodo: setNewTitleTodo,
+  newTitleTodo,
+  setNewTitleTodo,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const titleField = useRef<HTMLInputElement>(null);
@@ -45,7 +45,7 @@ export const Header: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const trimmedTitle = newTodoTitle.trim();
+    const trimmedTitle = newTitleTodo.trim();
 
     if (!trimmedTitle) {
       onErrorMessage('Title should not be empty');
@@ -103,7 +103,7 @@ export const Header: React.FC<Props> = ({
           placeholder="What needs to be done?"
           ref={titleField}
           disabled={isSubmitting}
-          value={newTodoTitle}
+          value={newTitleTodo}
           onChange={handleNewTodoTitle}
         />
       </form>

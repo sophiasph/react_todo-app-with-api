@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useMemo, useState } from 'react';
 import * as todoService from './api/todos';
 import { UserWarning } from './UserWarning';
@@ -34,7 +32,7 @@ export const App: React.FC = () => {
     }
 
     return todoService
-      .postTodos({ userId, title, completed })
+      .addTodo({ userId, title, completed })
       .then((newTitle: Todo) => {
         setTodos(currentTodo => [...currentTodo, newTitle]);
         setNewTitleTodo('');
@@ -52,18 +50,25 @@ export const App: React.FC = () => {
     setTodosInProcess(currentId => [...currentId, postId]);
 
     return todoService
-      .deleteTodos(postId)
+      .deleteTodo(postId)
       .then(() => {
         setTodos(currentTodo => currentTodo.filter(todo => todo.id !== postId));
       })
       .catch(() => {
         setErrorMessage('Unable to delete a todo');
-        setTimeout(() => setErrorMessage(''), 3000);
       })
       .finally(() => {
         setTodosInProcess(currentId => currentId.filter(id => id !== postId));
       });
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timeout = setTimeout(() => setErrorMessage(''), 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [errorMessage]);
 
   const updateTodo = (
     todoId: number,
@@ -86,7 +91,7 @@ export const App: React.FC = () => {
     setTodosInProcess(currentId => [...currentId, todoId]);
 
     return todoService
-      .updateTodos(todoId, updatedTodo)
+      .updateTodo(todoId, updatedTodo)
       .then(() => {
         setTodos(currentTodos =>
           currentTodos.map(todo => (todo.id === todoId ? updatedTodo : todo)),
